@@ -18,7 +18,16 @@ function keySorter([a], [b]) {
     return a === b ? 0 : a > b ? 1 : -1;
 }
 
+function getEnumerableString(enumerable) {
+    let json = toDeterministicJson({ ...enumerable });
+    return json === '{}' ? '' : `<${json}>`;
+}
+
 function jsonReplacer(key, val) {
+    if (typeof val === 'function') {
+        return `{{Function(${val})${getEnumerableString(val)}}}`;
+    }
+
     if (isNotJsonStringable(val)) {
         return `{{${val}}}`;
     }
@@ -26,17 +35,17 @@ function jsonReplacer(key, val) {
     if (isObject(val)) {
         if (val instanceof Date) {
             let asIso = val.toISOString();
-            return `{{${asIso}}}`;
+            return `{{Date(${asIso})${getEnumerableString(val)}}}`;
         }
 
         if (val instanceof Map || val instanceof WeakMap) {
             let asObj = toDeterministicJson(fromEntries(val));
-            return `{{${asObj}}}`;
+            return `{{Map(${asObj})${getEnumerableString(val)}}}`;
         }
 
         if (val instanceof Set || val instanceof WeakSet) {
             let asArray = toDeterministicJson(Array.from(val));
-            return `{{${asArray}}}`;
+            return `{{Set(${asArray})${getEnumerableString(val)}}}`;
         }
 
         return fromEntries(entries(val).sort(keySorter));
