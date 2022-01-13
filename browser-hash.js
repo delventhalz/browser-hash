@@ -24,6 +24,21 @@ function jsonReplacer(key, val) {
     }
 
     if (isObject(val)) {
+        if (val instanceof Date) {
+            let asIso = val.toISOString();
+            return `{{${asIso}}}`;
+        }
+
+        if (val instanceof Map || val instanceof WeakMap) {
+            let asObj = toDeterministicJson(fromEntries(val));
+            return `{{${asObj}}}`;
+        }
+
+        if (val instanceof Set || val instanceof WeakSet) {
+            let asArray = toDeterministicJson(Array.from(val));
+            return `{{${asArray}}}`;
+        }
+
         return fromEntries(entries(val).sort(keySorter));
     }
 
