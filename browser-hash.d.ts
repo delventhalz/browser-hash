@@ -4,8 +4,7 @@ export enum BrowserHashString {
   'SHA-384',
   'SHA-512'
 }
-export function listKeys(val: unknown): string[];
-export function toSortedJson(val: unknown): string;
+export function toDeterministicJson(val: unknown): string;
 export function toBytes(val: unknown): Uint8Array;
 export function bufferToHex(buff: ArrayBuffer): string;
 export function browserHash(val: unknown, algo?: BrowserHashString): string;

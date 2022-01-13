@@ -1,21 +1,23 @@
-export function listKeys(val) {
-    if (!val || typeof val !== 'object') {
-        return [];
-    }
+const { entries, fromEntries } = Object;
 
-    const keys = Array.isArray(obj)
-        ? Object.values(obj).flatMap(listKeys)
-        : [...Object.keys(obj), ...Object.values(obj).flatMap(listKeys)];
-
-    return [...new Set(keys)].sort();
+function keySorter([a], [b]) {
+    return a === b ? 0 : a > b ? 1 : -1;
 }
 
-export function toSortedJson(val) {
-    return JSON.stringify(val, listKeys(val));
+function jsonReplacer(key, val) {
+    if (!val || typeof val !== 'object' || Array.isArray(val)) {
+        return val;
+    }
+
+    return fromEntries(entries(val).sort(keySorter));
+}
+
+export function toDeterministicJson(val) {
+    return JSON.stringify(val, jsonReplacer);
 }
 
 export function toBuffer(val) {
-    return new TextEncoder().encode(toSortedJson(val));
+    return new TextEncoder().encode(toDeterministicJson(val));
 }
 
 export function bufferToHex(buff) {
