@@ -1,15 +1,33 @@
 const { entries, fromEntries } = Object;
 
+function isNotJsonStringable(val) {
+    return (
+        val === undefined
+            || typeof val === 'function'
+            || (typeof val === 'number' && !Number.isFinite(val))
+            || typeof val === 'bigint'
+            || typeof val === 'symbol'
+    );
+}
+
+function isObject(val) {
+    return val && typeof val === 'object' && !Array.isArray(val);
+}
+
 function keySorter([a], [b]) {
     return a === b ? 0 : a > b ? 1 : -1;
 }
 
 function jsonReplacer(key, val) {
-    if (!val || typeof val !== 'object' || Array.isArray(val)) {
-        return val;
+    if (isNotJsonStringable(val)) {
+        return `{{${val}}}`;
     }
 
-    return fromEntries(entries(val).sort(keySorter));
+    if (isObject(val)) {
+        return fromEntries(entries(val).sort(keySorter));
+    }
+
+    return val;
 }
 
 export function toDeterministicJson(val) {
