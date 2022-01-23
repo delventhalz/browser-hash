@@ -110,8 +110,8 @@ export function toDeterministicJson(val) {
     return JSON.stringify(toStringify, jsonReplacer);
 }
 
-export function toBuffer(val) {
-    return new TextEncoder().encode(toDeterministicJson(val));
+export function toBuffer(str) {
+    return new TextEncoder().encode(str);
 }
 
 export function bufferToHex(buff) {
@@ -120,9 +120,14 @@ export function bufferToHex(buff) {
         .join('');
 }
 
-export async function browserHash(val, algo = 'SHA-1') {
+export async function basicHash(str, algo = 'SHA-1') {
     const hash = await window.crypto.subtle.digest(algo, toBuffer(val));
     return bufferToHex(hash);
+}
+
+export function browserHash(val, algo = 'SHA-1') {
+    let toHash = typeof val === 'string' ? val : toDeterministicJson(val);
+    return basicHash(toHash, algo);
 }
 
 export default browserHash;
