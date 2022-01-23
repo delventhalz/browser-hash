@@ -1,25 +1,26 @@
 {
-  "name": "browser-hash",
+  "name": "easy-hash",
   "version": "0.1.0",
-  "description": "Hash JS objects with standard browser APIs",
-  "main": "browser-hash.js",
+  "description": "Hash any JS value with zero dependencies on any platform",
+  "main": "easy-hash.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/delventhalz/browser-hash.git"
+    "url": "git+https://github.com/delventhalz/easy-hash.git"
   },
   "keywords": [
     "crypto",
     "hash",
     "digest",
-    "browser"
+    "browser",
+    "node"
   ],
   "author": "Zac Delventhal <delventhalz@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/delventhalz/browser-hash/issues"
+    "url": "https://github.com/delventhalz/easy-hash/issues"
   },
-  "homepage": "https://github.com/delventhalz/browser-hash#readme"
+  "homepage": "https://github.com/delventhalz/easy-hash#readme"
 }

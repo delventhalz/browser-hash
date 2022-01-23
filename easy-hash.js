@@ -1,6 +1,19 @@
 const { isArray } = Array;
 const { entries, fromEntries, values } = Object;
 
+const NODE_HASH_STRING_TO_BROWSER = {
+    sha1: 'SHA-1',
+    sha256: 'SHA-256',
+    sha384: 'SHA-384',
+    sha512: 'SHA-512'
+};
+const BROWSER_HASH_STRING_TO_NODE = {
+    'SHA-1': 'sha1',
+    'SHA-256': 'sha256',
+    'SHA-384': 'sha384',
+    'SHA-512': 'sha512'
+}
+
 function isNotJsonStringable(val) {
     return (
         val === undefined
@@ -110,24 +123,28 @@ export function toDeterministicJson(val) {
     return JSON.stringify(toStringify, jsonReplacer);
 }
 
-export function toBuffer(str) {
-    return new TextEncoder().encode(str);
+function nodeHash(str, algo = 'sha1') {
+    let nodeAlgo = BROWSER_HASH_STRING_TO_NODE[algo] || algo;
+    return global.crypto.createHash(nodeAlgo).update(str).digest('hex');
 }
 
-export function bufferToHex(buff) {
-    return Array.from(new Uint8Array(buff))
+async function browserHash(str, algo = 'SHA-1') {
+    let browserAlgo = NODE_HASH_STRING_TO_BROWSER[algo] || algo;
+    let buffer = new TextEncoder().encode(str);
+    let hash = await window.crypto.subtle.digest(browserAlgo, buffer);
+
+    return Array.from(new Uint8Array(hash))
         .map(byte => byte.toString(16).padStart(2, '0'))
         .join('');
 }
 
-export async function basicHash(str, algo = 'SHA-1') {
-    const hash = await window.crypto.subtle.digest(algo, toBuffer(val));
-    return bufferToHex(hash);
-}
+export const basicHash = typeof window === 'undefined'
+    ? nodeHash
+    : browserHash;
 
-export function browserHash(val, algo = 'SHA-1') {
+export function easyHash(val, algo = 'SHA-1') {
     let toHash = typeof val === 'string' ? val : toDeterministicJson(val);
     return basicHash(toHash, algo);
 }
 
-export default browserHash;
+export default easyHash;
