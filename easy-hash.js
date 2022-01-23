@@ -126,13 +126,22 @@ function jsonReplacer(key, val) {
     return val;
 }
 
-function nodeHash(strOrBuffer, algo = 'sha256') {
+function nodeHashSync(strOrBuffer, algo = 'sha256') {
     let nodeAlgo = BROWSER_HASH_STRING_TO_NODE[algo] || algo;
 
     return global.crypto
         .createHash(nodeAlgo)
         .update(strOrBuffer)
         .digest('hex');
+}
+
+async function nodeHash(strOrBuffer, algo) {
+    await Promise.resolve();
+    return nodeHashSync(strOrBuffer, algo);
+}
+
+function browserHashSync() {
+    throw new Error('Synchronous hashing is not supported in the browser');
 }
 
 async function browserHash(strOrBuffer, algo = 'SHA-256') {
@@ -153,11 +162,22 @@ async function browserHash(strOrBuffer, algo = 'SHA-256') {
 }
 
 /**
- * Hash a string or array buffer using native functionality.
+ * Hash a string or array buffer synchronously using native functionality.
  *
  * @param {string|ArrayBuffer} val - a string or buffer
  * @param {string} [algo] - a valid algorithm name string
  * @returns {string} - the digest formatted as a hexadecimal string
+ */
+export const basicHashSync = typeof window === 'undefined'
+    ? nodeHashSync
+    : browserHashSync;
+
+/**
+ * Hash a string or array buffer using native functionality.
+ *
+ * @param {string|ArrayBuffer} val - a string or buffer
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {Promise<string>} - the digest formatted as a hexadecimal string
  */
 export const basicHash = typeof window === 'undefined'
     ? nodeHash
@@ -199,6 +219,25 @@ export function toDeterministicJson(val) {
  * @param {*} val - any JS value
  * @param {string} [algo] - a valid algorithm name string
  * @returns {string} - the digest formatted as a hexadecimal string
+ */
+export function easyHashSync(val, algo = 'SHA-256') {
+    let toHash = isString(val) || isBuffer(val)
+        ? val
+        : toDeterministicJson(val);
+
+    return basicHashSync(toHash, algo);
+}
+
+/**
+ * Hash any JS value using native functionality.
+ *
+ * If passed a string or ArrayBuffer, the value is hashed directly.
+ * Other JSON stringified using a custom replacer to ensure distinct
+ * deterministic hashes.
+ *
+ * @param {*} val - any JS value
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {Promise<string>} - the digest formatted as a hexadecimal string
  */
 export function easyHash(val, algo = 'SHA-256') {
     let toHash = isString(val) || isBuffer(val)
