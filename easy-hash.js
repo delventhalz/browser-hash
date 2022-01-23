@@ -69,15 +69,22 @@ function replaceCircularReferences(val, path = '', parents = new Map()) {
     );
 }
 
+// Sort function to sort key/value tuples by the key
 function keySorter([a], [b]) {
     return a === b ? 0 : a > b ? 1 : -1;
 }
 
+// Stringifies the enumerable properties of an object
 function getEnumerableString(enumerable) {
     let json = toDeterministicJson({ ...enumerable });
     return json === '{}' ? '' : `<${json}>`;
 }
 
+// Custom replacer to:
+//   - Sort keys in objects
+//   - Stringify normally unstringifiable values (like functions and undefined)
+//   - Distinguish between erroneously identical edge cases
+//   - Include any enumerable properties on objects like functions
 function jsonReplacer(key, val) {
     let valType = typeof val;
 
@@ -145,10 +152,35 @@ async function browserHash(strOrBuffer, algo = 'SHA-256') {
         .join('');
 }
 
+/**
+ * Hash a string or array buffer using native functionality.
+ *
+ * @param {string|ArrayBuffer} val - a string or buffer
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {string} - the digest formatted as a hexadecimal string
+ */
 export const basicHash = typeof window === 'undefined'
     ? nodeHash
     : browserHash;
 
+/**
+ * Generate valid JSON from any JS value such that equivalent objects produce
+ * the same output string, but distinct values produce distinct strings.
+ *
+ * The generic JSON.stringify function runs into a number of issues creating
+ * deterministic strings:
+ *   - Object keys are unsorted
+ *   - All Maps and Sets stringify to the same empty object
+ *   - undefined, symbols, and functions are simply dropped
+ *   - Circular references and BigInts cause errors to be thrown
+ *
+ * This utility handles all of these edge cases, guaranteeing a distinct
+ * deterministic output in almost all cases.
+ *
+ * @param {*} val - any JS value
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {string} - the digest formatted as a hexadecimal string
+ */
 export function toDeterministicJson(val) {
     let toStringify = hasCircularReferences(val)
         ? replaceCircularReferences(val)
@@ -157,6 +189,17 @@ export function toDeterministicJson(val) {
     return JSON.stringify(toStringify, jsonReplacer);
 }
 
+/**
+ * Hash any JS value using native functionality.
+ *
+ * If passed a string or ArrayBuffer, the value is hashed directly.
+ * Other JSON stringified using a custom replacer to ensure distinct
+ * deterministic hashes.
+ *
+ * @param {*} val - any JS value
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {string} - the digest formatted as a hexadecimal string
+ */
 export function easyHash(val, algo = 'SHA-256') {
     let toHash = isString(val) || isBuffer(val)
         ? val
