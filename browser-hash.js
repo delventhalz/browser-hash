@@ -1,4 +1,5 @@
-const { entries, fromEntries } = Object;
+const { isArray } = Array;
+const { entries, fromEntries, values } = Object;
 
 function isNotJsonStringable(val) {
     return (
@@ -11,7 +12,54 @@ function isNotJsonStringable(val) {
 }
 
 function isObject(val) {
-    return val && typeof val === 'object' && !Array.isArray(val);
+    return val && typeof val === 'object';
+}
+
+function isDictionaryLike(val) {
+    return isObject(val) && !isArray(val);
+}
+
+function hasCircularReferences(val, parents = new Set()) {
+    if (!isObject(val)) {
+        return false;
+    }
+
+    if (parents.has(val)) {
+        return true;
+    }
+
+    let nextParents = new Set([...parents, val]);
+    return values(val).some(v => hasCircularReferences(v, nextParents));
+}
+
+function toPath(base, key) {
+    return base ? `${base}.${key}` : key;
+}
+
+function replaceCircularReferences(val, path = '', parents = new Map()) {
+    if (!isObject(val)) {
+        return val;
+    }
+
+    if (parents.has(val)) {
+        return `{{Circular(${parents.get(val)})}}`;
+    }
+
+    let nextParents = new Map(parents);
+    nextParents.set(val, path);
+
+    if (isArray(val)) {
+        return val.map((elem, i) => (
+            replaceCircularReferences(elem, toPath(path, i), nextParents)
+        ));
+    }
+
+    return fromEntries(
+        entries(val).map(([k, v]) => [
+            k,
+            replaceCircularReferences(v, toPath(path, k), nextParents)
+        ])
+    );
 }
 
 function keySorter([a], [b]) {
@@ -32,7 +80,7 @@ function jsonReplacer(key, val) {
         return `{{${val}}}`;
     }
 
-    if (isObject(val)) {
+    if (isDictionaryLike(val)) {
         if (val instanceof Date) {
             let asIso = val.toISOString();
             return `{{Date(${asIso})${getEnumerableString(val)}}}`;
@@ -55,7 +103,11 @@ function jsonReplacer(key, val) {
 }
 
 export function toDeterministicJson(val) {
-    return JSON.stringify(val, jsonReplacer);
+    let toStringify = hasCircularReferences(val)
+        ? replaceCircularReferences(val)
+        : val;
+
+    return JSON.stringify(toStringify, jsonReplacer);
 }
 
 export function toBuffer(val) {
