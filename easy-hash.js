@@ -14,8 +14,16 @@ const BROWSER_HASH_STRING_TO_NODE = {
     'SHA-512': 'sha512'
 }
 
+function isString(val) {
+    return typeof val === 'string';
+}
+
 function isObject(val) {
     return val && typeof val === 'object';
+}
+
+function isBuffer(val) {
+    return val && val.buffer && val.buffer.constructor === ArrayBuffer;
 }
 
 function hasCircularReferences(val, parents = new Set()) {
@@ -111,15 +119,26 @@ function jsonReplacer(key, val) {
     return val;
 }
 
-function nodeHash(str, algo = 'sha256') {
+function nodeHash(strOrBuffer, algo = 'sha256') {
     let nodeAlgo = BROWSER_HASH_STRING_TO_NODE[algo] || algo;
-    return global.crypto.createHash(nodeAlgo).update(str).digest('hex');
+
+    return global.crypto
+        .createHash(nodeAlgo)
+        .update(strOrBuffer)
+        .digest('hex');
 }
 
-async function browserHash(str, algo = 'SHA-256') {
+async function browserHash(strOrBuffer, algo = 'SHA-256') {
     let browserAlgo = NODE_HASH_STRING_TO_BROWSER[algo] || algo;
-    let buffer = new TextEncoder().encode(str);
-    let hash = await window.crypto.subtle.digest(browserAlgo, buffer);
+    let toHash = isString(strOrBuffer)
+        ? new TextEncoder().encode(strOrBuffer)
+        : strOrBuffer;
+
+    if (!isBuffer(toHash)) {
+        throw new TypeError('Value to hash must be string or ArrayBuffer');
+    }
+
+    let hash = await window.crypto.subtle.digest(browserAlgo, toHash);
 
     return Array.from(new Uint8Array(hash))
         .map(byte => byte.toString(16).padStart(2, '0'))
@@ -139,7 +158,10 @@ export function toDeterministicJson(val) {
 }
 
 export function easyHash(val, algo = 'SHA-256') {
-    let toHash = typeof val === 'string' ? val : toDeterministicJson(val);
+    let toHash = isString(val) || isBuffer(val)
+        ? val
+        : toDeterministicJson(val);
+
     return basicHash(toHash, algo);
 }
 
