@@ -123,12 +123,12 @@ export function toDeterministicJson(val) {
     return JSON.stringify(toStringify, jsonReplacer);
 }
 
-function nodeHash(str, algo = 'sha1') {
+function nodeHash(str, algo = 'sha256') {
     let nodeAlgo = BROWSER_HASH_STRING_TO_NODE[algo] || algo;
     return global.crypto.createHash(nodeAlgo).update(str).digest('hex');
 }
 
-async function browserHash(str, algo = 'SHA-1') {
+async function browserHash(str, algo = 'SHA-256') {
     let browserAlgo = NODE_HASH_STRING_TO_BROWSER[algo] || algo;
     let buffer = new TextEncoder().encode(str);
     let hash = await window.crypto.subtle.digest(browserAlgo, buffer);
@@ -142,7 +142,7 @@ export const basicHash = typeof window === 'undefined'
     ? nodeHash
     : browserHash;
 
-export function easyHash(val, algo = 'SHA-1') {
+export function easyHash(val, algo = 'SHA-256') {
     let toHash = typeof val === 'string' ? val : toDeterministicJson(val);
     return basicHash(toHash, algo);
 }
