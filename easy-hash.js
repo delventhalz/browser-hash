@@ -14,22 +14,8 @@ const BROWSER_HASH_STRING_TO_NODE = {
     'SHA-512': 'sha512'
 }
 
-function isNotJsonStringable(val) {
-    return (
-        val === undefined
-            || typeof val === 'function'
-            || (typeof val === 'number' && !Number.isFinite(val))
-            || typeof val === 'bigint'
-            || typeof val === 'symbol'
-    );
-}
-
 function isObject(val) {
     return val && typeof val === 'object';
-}
-
-function isDictionaryLike(val) {
-    return isObject(val) && !isArray(val);
 }
 
 function hasCircularReferences(val, parents = new Set()) {
@@ -85,15 +71,25 @@ function getEnumerableString(enumerable) {
 }
 
 function jsonReplacer(key, val) {
-    if (typeof val === 'function') {
-        return `{{Function(${val})${getEnumerableString(val)}}}`;
-    }
+    let valType = typeof val;
 
-    if (isNotJsonStringable(val)) {
+    if (val === undefined || valType === 'symbol') {
         return `{{${val}}}`;
     }
 
-    if (isDictionaryLike(val)) {
+    if (valType === 'bigint') {
+        return `{{BigInt(${val})}}`;
+    }
+
+    if (valType === 'number' && !Number.isFinite(val)) {
+        return `{{Number(${val})}}`
+    }
+
+    if (valType === 'function') {
+        return `{{Function(${val})${getEnumerableString(val)}}}`;
+    }
+
+    if (isObject(val) && !isArray(val)) {
         if (val instanceof Date) {
             let asIso = val.toISOString();
             return `{{Date(${asIso})${getEnumerableString(val)}}}`;
