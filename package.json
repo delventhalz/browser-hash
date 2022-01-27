@@ -1,6 +1,6 @@
 {
   "name": "browser-hash",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Hash strings and ArrayBuffers with built-in browser APIs",
   "browser": "browser-hash.js",
   "scripts": {

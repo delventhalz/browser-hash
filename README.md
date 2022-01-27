@@ -226,6 +226,13 @@ Then run the tests:
 npm test
 ```
 
+The repo is also linted using ESLint and a modified version of the
+[AirBnB Style Guide](https://github.com/airbnb/javascript). To run the linter:
+
+```bash
+npm run lint
+```
+
 ## License
 
 [MIT Licensed](./LICENSE)
