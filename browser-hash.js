@@ -1,13 +1,17 @@
 /**
- * Determine if a value is a valid ArrayBuffer or ArrayBufferView,
- * including Uint8Array, Uint16Array, etc.
+ * Determine if a value is a valid ArrayBuffer or TypedArray.
  *
  * @param {*} val - the value to check
  * @returns {boolean}
  */
 export function isBuffer(val) {
     const buffer = val && val.buffer ? val.buffer : val;
-    return Boolean(buffer) && buffer.constructor === ArrayBuffer;
+
+    return (
+        Boolean(buffer)
+            && buffer.constructor === ArrayBuffer
+            && !(val instanceof DataView)
+    );
 }
 
 /**
@@ -21,12 +25,16 @@ export function stringToBuffer(str) {
 }
 
 /**
- * Convert an ArrayBuffer or ArrayBufferView into a hexadecimal string.
+ * Convert an ArrayBuffer or TypedArray into a hexadecimal string.
  *
  * @param {ArrayBuffer} buffer - the ArrayBuffer to convert
  * @returns {string} - a hex string
  */
 export function bufferToHex(buffer) {
+    if (!isBuffer(buffer)) {
+        throw new TypeError(`Cannot convert value of type: ${typeof buffer}`);
+    }
+
     return Array.from(new Uint8Array(buffer))
         .map(byte => byte.toString(16).padStart(2, "0"))
         .join("");

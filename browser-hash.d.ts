@@ -11,9 +11,7 @@ export type TypedArray = Int8Array
     | BigInt64Array
     | BigUint64Array;
 
-export type BrowserBuffer = ArrayBuffer
-    | TypedArray
-    | DataView;
+export type BrowserBuffer = ArrayBuffer | TypedArray;
 
 export function isBuffer(val: unknown): val is BrowserBuffer;
 export function stringToBuffer(str: string): Uint8Array;

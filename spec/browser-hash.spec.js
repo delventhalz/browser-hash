@@ -125,18 +125,25 @@ describe("browserHash", () => {
     });
 
     describe("isBuffer", () => {
-        it("passes ArrayBuffers and ArrayBufferViews", () => {
+        it("passes ArrayBuffers and TypedArrays", () => {
             expect(isBuffer(ISHMAEL_UTF_8)).to.be.true;
             expect(isBuffer(new ArrayBuffer(16))).to.be.true;
-            expect(isBuffer(new DataView(PEQUOD_UTF_8.buffer))).to.be.true;
+            expect(isBuffer(Float32Array.from(PEQUOD_UTF_8))).to.be.true;
         });
 
-        it("fails all other value types", () => {
+        it("fails primitive values", () => {
             expect(isBuffer(true)).to.be.false;
             expect(isBuffer(0)).to.be.false;
             expect(isBuffer("Ishmael")).to.be.false;
-            expect(isBuffer([73, 115, 104, 109, 97, 101, 108])).to.be.false;
+        });
+
+        it("fails objects and arrays", () => {
             expect(isBuffer({ name: "Ishamel" })).to.be.false;
+            expect(isBuffer([73, 115, 104, 109, 97, 101, 108])).to.be.false;
+        });
+
+        it("fails DataViews", () => {
+            expect(isBuffer(new DataView(ISHMAEL_UTF_8.buffer))).to.be.false;
         });
     });
 
@@ -156,10 +163,16 @@ describe("browserHash", () => {
             expect(bufferToHex(EMPTY_UTF_8)).to.equal("");
         });
 
-        it("converts other ArrayBuffers and ArrayBufferViews to hex strings", () => {
+        it("converts other ArrayBuffers and TypedArrays to hex strings", () => {
             expect(bufferToHex(new ArrayBuffer(0))).to.equal("");
             expect(bufferToHex(Uint16Array.from(ISHMAEL_UTF_8))).to.equal(ISHMAEL_UTF_8_HEX);
-            expect(bufferToHex(new DataView(PEQUOD_UTF_8.buffer))).to.equal(PEQUOD_UTF_8_HEX);
+            expect(bufferToHex(Float32Array.from(PEQUOD_UTF_8))).to.equal(PEQUOD_UTF_8_HEX);
+        });
+
+        it("throws a TypeError when passed an invalid type", () => {
+            expect(() => bufferToHex("Ishmael")).to.throw(TypeError);
+            expect(() => bufferToHex([73, 115, 104, 109, 97, 101, 108])).to.throw(TypeError);
+            expect(() => bufferToHex(new DataView(ISHMAEL_UTF_8.buffer))).to.throw(TypeError);
         });
     });
 

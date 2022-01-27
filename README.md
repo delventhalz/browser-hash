@@ -2,8 +2,8 @@
 
 A lightweight wrapper to make digests from the
 [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
-a little more pleasant to use. Hash strings and ArrayBuffers directly on the
-browser with zero dependencies or other overhead.
+a little more pleasant to use. Hash strings, ArrayBuffers, and TypedArrays
+directly in the browser with zero dependencies or other overhead.
 
 Note that this library is not intended for cryptographic purposes. If you need
 cryptographically secure hashing, there are extra steps you may need to take
@@ -44,9 +44,9 @@ browserHash(name).then(console.log);
 
 _Parameters:_
 
-- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or
-  any ArrayBufferView (Uint8Array, Uint16Array, etc). Any other type of value
-  will throw an error.
+- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
+  TypedArray (Uint8Array, Uint16Array, etc). Throws an error when passed any
+  other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
@@ -74,7 +74,7 @@ browserHash(name, "SHA-1").then(console.log);
 // 5cf59925a1926d4907a6bf56f42f0355b34a5812
 ```
 
-ArrayBuffers and ArrayBufferViews can hashed the same way as strings.
+ArrayBuffers and TypedArrays can hashed the same way as strings.
 
 ```javascript
 let data = Uint8Array.from([80, 101, 113, 117, 111, 100]);
@@ -109,14 +109,14 @@ _Parameters:_
 
 _Returns:_
 
-- A boolean, `true` if the value is an ArrayBuffer or ArrayBufferView,
+- A boolean. Returns `true` if the value is an ArrayBuffer or TypedArray,
   `false` otherwise.
 
 In addition to the main `browserHash` function, some of the utilities used by
 the function are provided as named exports for convenience.
 
 The `isBuffer` utility simply checks if a value is an ArrayBuffer or
-ArrayBufferView.
+TypedArray.
 
 ### stringToBuffer
 
@@ -158,14 +158,13 @@ console.log(bufferToHex(data));
 
 _Parameters:_
 
-- **`buffer`** - An ArrayBuffer or ArrayBufferView to convert into a hex
-  string.
+- **`buffer`** - An ArrayBuffer or TypedArray to convert into a hex string.
 
 _Returns:_
 
 - The binary data from the buffer, formatted as a hexadecimal string.
 
-Convert small ArrayBuffers into hex strings for readability and portability.
+Convert smallish buffers into hex strings for readability and portability.
 
 ### bufferHash
 
@@ -182,9 +181,9 @@ bufferHash(name).then(console.log);
 
 _Parameters:_
 
-- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or
-  any ArrayBufferView (Uint8Array, Uint16Array, etc). Any other type of value
-  will throw an error.
+- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
+  TypedArray (Uint8Array, Uint16Array, etc). Throws an error when passed any
+  other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
