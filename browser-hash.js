@@ -73,9 +73,7 @@ export async function bufferHash(strOrBuffer, algo = "SHA-256") {
  * @param {string} [algo] - a valid algorithm name string
  * @returns {Promise<string>} - the digest formatted as a hexadecimal string
  */
-export async function browserHash(strOrBuffer, algo = "SHA-256") {
+export default async function browserHash(strOrBuffer, algo = "SHA-256") {
     let digest = await convertAndHash(strOrBuffer, algo);
     return bufferToHex(digest);
 }
-
-export default browserHash;
