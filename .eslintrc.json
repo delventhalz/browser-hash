@@ -1,0 +1,73 @@
+{
+    "extends": [
+        "airbnb-base"
+    ],
+
+    "env": {
+      "browser": true,
+      "es2017": true
+    },
+
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+
+    "overrides": [
+        {
+            "files": ["*.spec.js"],
+            "env": {
+                "mocha": true
+            },
+            "globals": {
+                "expect": true
+            },
+            "rules": {
+                "max-len": "off",
+                "no-unused-expressions": "off"
+            }
+        }
+    ],
+
+    "rules": {
+        "arrow-parens": [
+            "error",
+            "as-needed",
+            { "requireForBlockBody": true }
+        ],
+
+        "import/extensions": ["error", "always"],
+
+        "import/prefer-default-export": "off",
+
+        "indent": ["error", 4],
+
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "ForInStatement",
+                "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+            },
+            {
+                "selector": "LabeledStatement",
+                "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+            },
+            {
+                "selector": "WithStatement",
+                "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+            }
+        ],
+
+        "no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }
+        ],
+
+        "prefer-const": "off",
+
+        "quotes": ["error", "double"]
+    }
+}

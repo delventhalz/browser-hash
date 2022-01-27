@@ -1,12 +1,9 @@
-/* global describe it expect */
-
 import browserHash, {
     isBuffer,
     stringToBuffer,
     bufferToHex,
-    bufferHash
+    bufferHash,
 } from "../browser-hash.js";
-
 
 // Add functions to global scope for manual testing
 window.browserHash = browserHash;
@@ -14,7 +11,6 @@ window.isBuffer = isBuffer;
 window.stringToBuffer = stringToBuffer;
 window.bufferToHex = bufferToHex;
 window.bufferHash = bufferHash;
-
 
 // All constant values generated in Node to test cross-compatibility
 const ISHMAEL_UTF_8 = Uint8Array.from([73, 115, 104, 109, 97, 101, 108]);
