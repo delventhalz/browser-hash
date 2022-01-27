@@ -45,8 +45,8 @@ browserHash(name).then(console.log);
 _Parameters:_
 
 - **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
-  TypedArray (Uint8Array, Uint16Array, etc). Throws an error when passed any
-  other type of value.
+  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error when passed
+  any other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
@@ -133,12 +133,12 @@ console.log(data);
 
 _Parameters:_
 
-- **`str`** - The string to convert to a Uint8Array. Non-string values will
+- **`str`** - The string to convert to a `Uint8Array`. Non-string values will
   have their `toString` method called and then be converted.
 
 _Returns:_
 
-- A UTF-8 encoded Uint8Array.
+- A UTF-8 encoded `Uint8Array`.
 
 `stringToBuffer` is a very thin wrapper around
 [TextEncoder.encode](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode).
@@ -182,8 +182,8 @@ bufferHash(name).then(console.log);
 _Parameters:_
 
 - **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
-  TypedArray (Uint8Array, Uint16Array, etc). Throws an error when passed any
-  other type of value.
+  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error when passed
+  any other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
@@ -193,10 +193,10 @@ _Parameters:_
 
 _Returns:_
 
-- A Promise that resolves to the specified hash, formatted as a Uint8Array.
+- A Promise that resolves to the specified hash, formatted as a `Uint8Array`.
 
 Similar to `browserHash`, but skips converting the digest to a hex string,
-instead returning a Uint8Array directly. Useful if you want to do further
+instead returning a `Uint8Array` directly. Useful if you want to do further
 binary operations on the digest.
 
 ## Compatibility
