@@ -18,6 +18,7 @@ which this library will not be suited for.
     * [stringToBuffer](#stringtobuffer)
     * [bufferToHex](#buffertohex)
 - [Compatibility](#compatibility)
+- [Tests](#tests)
 - [License](#license)
 
 ## Installation
@@ -207,6 +208,24 @@ Compatible with any browser that supports
 and
 [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 Basically all modern browsers and _not_ Internet Explorer.
+
+## Tests
+
+This repo includes some units tests of the basic functionality in the
+[spec/](./spec/) directory. To run the tests, first clone this repo and install
+the dev dependencies:
+
+```bash
+git clone https://github.com/delventhalz/browser-hash.git
+cd browser-hash
+npm install
+```
+
+Then run the tests:
+
+```bash
+npm test
+```
 
 ## License
 
