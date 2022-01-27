@@ -23,7 +23,7 @@ which this library will not be suited for.
 ## Installation
 
 ```bash
-npm install browser-hash
+npm install --save browser-hash
 ```
 
 ## Usage
