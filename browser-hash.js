@@ -6,9 +6,8 @@
  * @returns {boolean}
  */
 export function isBuffer(val) {
-    return (
-        Boolean(val && val.buffer) && val.buffer.constructor === ArrayBuffer
-    );
+    const buffer = val && val.buffer ? val.buffer : val;
+    return Boolean(buffer) && buffer.constructor === ArrayBuffer;
 }
 
 /**
