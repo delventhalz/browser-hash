@@ -166,6 +166,39 @@ _Returns:_
 
 Convert small ArrayBuffers into hex strings for readability and portability.
 
+### bufferHash
+
+```javascript
+import { bufferHash } from "browser-hash";
+
+let name = "Ishmael";
+
+bufferHash(name).then(console.log);
+// Uint8Array(32) [26, 160, 252, 193, 20, 112, 136, ...]
+```
+
+#### `bufferHash(strOrBuffer, [algo="SHA-256"])`
+
+_Parameters:_
+
+- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or
+  any ArrayBufferView (Uint8Array, Uint16Array, etc). Any other type of value
+  will throw an error.
+- **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
+  values are:
+  * `"SHA-1"`
+  * `"SHA-256"` _(default)_
+  * `"SHA-384"`
+  * `"SHA-512"`
+
+_Returns:_
+
+- A Promise that resolves to the specified hash, formatted as a Uint8Array.
+
+Similar to `browserHash`, but skips converting the digest to a hex string,
+instead returning a Uint8Array directly. Useful if you want to do further
+binary operations on the digest.
+
 ## Compatibility
 
 Compatible with any browser that supports

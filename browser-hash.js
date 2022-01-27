@@ -33,14 +33,7 @@ export function bufferToHex(buffer) {
         .join("");
 }
 
-/**
- * Hash a string or array buffer using native functionality.
- *
- * @param {string|ArrayBuffer} val - a string or buffer
- * @param {string} [algo] - a valid algorithm name string
- * @returns {Promise<string>} - the digest formatted as a hexadecimal string
- */
-export async function browserHash(strOrBuffer, algo = "SHA-256") {
+function convertAndHash(strOrBuffer, algo) {
     let toHash = typeof strOrBuffer === "string"
         ? stringToBuffer(strOrBuffer)
         : strOrBuffer;
@@ -49,8 +42,33 @@ export async function browserHash(strOrBuffer, algo = "SHA-256") {
         throw new TypeError(`Cannot hash value of type: ${typeof toHash}`);
     }
 
-    let hash = await window.crypto.subtle.digest(algo, toHash);
-    return bufferToHex(hash);
+    return window.crypto.subtle.digest(algo, toHash);
+}
+
+/**
+ * Asynchronously hash a string or array buffer using native functionality,
+ * returning the digest formatted as a Uint8Array.
+ *
+ * @param {string|ArrayBuffer} val - a string or buffer
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {Promise<Uint8Array>} - the digest formatted as a Uint8Array
+ */
+export async function bufferHash(strOrBuffer, algo = "SHA-256") {
+    let digest = await convertAndHash(strOrBuffer, algo);
+    return new Uint8Array(digest);
+}
+
+/**
+ * Asynchronously hash a string or array buffer using native functionality,
+ * returning the digest formatted as a hexadecimal string.
+ *
+ * @param {string|ArrayBuffer} val - a string or buffer
+ * @param {string} [algo] - a valid algorithm name string
+ * @returns {Promise<string>} - the digest formatted as a hexadecimal string
+ */
+export async function browserHash(strOrBuffer, algo = "SHA-256") {
+    let digest = await convertAndHash(strOrBuffer, algo);
+    return bufferToHex(digest);
 }
 
 export default browserHash;
