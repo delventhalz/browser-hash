@@ -21,6 +21,10 @@ export function isBuffer(val) {
  * @returns {Uint8Array}
  */
 export function stringToBuffer(str) {
+    if (typeof str !== "string") {
+        throw new TypeError(`Attempted to convert string, got: ${typeof str}`);
+    }
+
     return new TextEncoder().encode(str);
 }
 
@@ -32,7 +36,7 @@ export function stringToBuffer(str) {
  */
 export function bufferToHex(buffer) {
     if (!isBuffer(buffer)) {
-        throw new TypeError(`Cannot convert value of type: ${typeof buffer}`);
+        throw new TypeError(`Attempted to convert buffer, got: ${typeof buffer}`);
     }
 
     return Array.from(new Uint8Array(buffer))
@@ -41,15 +45,11 @@ export function bufferToHex(buffer) {
 }
 
 function convertAndHash(strOrBuffer, algo) {
-    let toHash = typeof strOrBuffer === "string"
-        ? stringToBuffer(strOrBuffer)
-        : strOrBuffer;
+    let buffer = isBuffer(strOrBuffer)
+        ? strOrBuffer
+        : stringToBuffer(strOrBuffer);
 
-    if (!isBuffer(toHash)) {
-        throw new TypeError(`Cannot hash value of type: ${typeof toHash}`);
-    }
-
-    return window.crypto.subtle.digest(algo, toHash);
+    return window.crypto.subtle.digest(algo, buffer);
 }
 
 /**

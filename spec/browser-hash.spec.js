@@ -154,6 +154,14 @@ describe("browserHash", () => {
             expect(stringToBuffer("Pequod")).to.deep.equal(PEQUOD_UTF_8);
             expect(stringToBuffer("")).to.deep.equal(EMPTY_UTF_8);
         });
+
+        it("throws a TypeError when passed a non-string", () => {
+            expect(() => stringToBuffer(true)).to.throw(TypeError);
+            expect(() => stringToBuffer(7)).to.throw(TypeError);
+            expect(() => stringToBuffer(ISHMAEL_UTF_8)).to.throw(TypeError);
+            expect(() => stringToBuffer([80, 101, 113, 117, 111, 100])).to.throw(TypeError);
+            expect(() => stringToBuffer({ name: "Ishamel" })).to.throw(TypeError);
+        });
     });
 
     describe("bufferToHex", () => {

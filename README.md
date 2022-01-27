@@ -133,8 +133,8 @@ console.log(data);
 
 _Parameters:_
 
-- **`str`** - The string to convert to a `Uint8Array`. Non-string values will
-  have their `toString` method called and then be converted.
+- **`str`** - The string to convert to a `Uint8Array`. Throws an error when
+  passed a non-string value.
 
 _Returns:_
 
