@@ -61,7 +61,7 @@ _Returns:_
 A lightweight wrapper around
 [SubtleCrypto.digest](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest),
 `browserHash` asynchronously hashes a string or buffer. All resulting digests
-are formatted as hexadecimal string for convenience.
+are formatted as hexadecimal strings for convenience.
 
 If you wish to use a different algorithm than the default SHA-256, specify the
 name of the algorithm as the second parameter.
@@ -111,8 +111,8 @@ _Returns:_
 - A boolean, `true` if the value is an ArrayBuffer or ArrayBufferView,
   `false` otherwise.
 
-In addition to the main `browserHash` function, some of the utilities used are
-provided as named exports for convenience.
+In addition to the main `browserHash` function, some of the utilities used by
+the function are provided as named exports for convenience.
 
 The `isBuffer` utility simply checks if a value is an ArrayBuffer or
 ArrayBufferView.
@@ -173,7 +173,7 @@ Compatible with any browser that supports
 [TextEncoder](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode),
 and
 [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
-Basically all modern browsers but _not_ Internet Explorer.
+Basically all modern browsers and _not_ Internet Explorer.
 
 ## License
 
