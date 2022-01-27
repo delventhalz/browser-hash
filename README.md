@@ -1,259 +1,179 @@
-# easyHash
+# browserHash
 
-Hash anything using native JavaScript functionality with zero dependencies.
+A lightweight wrapper to make digests from the
+[Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+a little more pleasant to use. Hash strings and ArrayBuffers directly on the
+browser with zero dependencies or other overhead.
+
+Note that this library is not intended for cryptographic purposes. If you need
+cryptographically secure hashing, there are extra steps you may need to take
+which this library will not be suited for.
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
-    * [easyHash](#easyhash-1)
-    * [easyHashSync](#easyhashsync)
-    * [basicHash](#basichash)
-    * [basicHashSync](#basichashsync)
-    * [toDeterministicJson](#todeterministicjson)
+    * [browserHash](#browserhash-1)
+    * [isBuffer](#isbuffer)
+    * [stringToBuffer](#stringtobuffer)
+    * [bufferToHex](#buffertohex)
 - [Compatibility](#compatibility)
 - [License](#license)
 
 ## Installation
 
 ```bash
-npm install easy-hash
+npm install browser-hash
 ```
 
 ## Usage
 
-### easyHash
+### browserHash
 
 ```javascript
-import easyHash from 'easy-hash';
+import browserHash from "browser-hash";
 
-let user = {
-    id: 1337,
-    name: 'Sue'
-};
+let name = "Ishmael";
 
-easyHash(user).then(console.log);
-// 64901768d9e8af909944d11afcaf6a11d30da003077a8db9e69185ba9728aadd
+browserHash(name).then(console.log);
+// 1aa0fcc1147088ab255380f60b7d1b6394fd447a33ef5a067c188b79f9b81d94
 ```
 
-**`easyHash(val[, algo])`**
+#### `browserHash(strOrBuffer, [algo="SHA-256"])`
 
 _Parameters:_
 
-- **`val`** - Any JavaScript value, including strings, buffers, and objects.
-- **`algo`** _(optional)_ - A valid algorithm string name. On the browser,
-  `"sha1"`, `"sha256"`, `"sha384"`, `"sha512"`, `"SHA-1"`, `"SHA-256"`,
-  `"SHA-384"`, and `"SHA-512"` are valid. In Node, a variety of algorithms are
-  supported. They can be listed using openssl in the command line with:
-  `openssl list -digest-algorithms`. Defaults to `"SHA-256"`.
+- **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or
+  any ArrayBufferView (Uint8Array, Uint16Array, etc). Any other type of value
+  will throw an error.
+- **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
+  values are:
+  * `"SHA-1"`
+  * `"SHA-256"` _(default)_
+  * `"SHA-384"`
+  * `"SHA-512"`
 
 _Returns:_
 
-- A Promise that resolves to the specified hash formatted as a hexadecimal
+- A Promise that resolves to the specified hash, formatted as a hexadecimal
   string.
 
-The default hashing function, it accepts any value and asynchronously produces
-a hexadecimal digest. Works identically on both Node and in the browser.
+A lightweight wrapper around
+[SubtleCrypto.digest](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest),
+`browserHash` asynchronously hashes a string or buffer. All resulting digests
+are formatted as hexadecimal string for convenience.
 
-For objects, keys are sorted before hashing, so equivalent objects produce
-identical hashes:
-
-```javascript
-easyHash({ id: 1337, name: 'Sue'}).then(console.log);
-// 64901768d9e8af909944d11afcaf6a11d30da003077a8db9e69185ba9728aadd
-
-easyHash({ name: 'Sue', id: 1337 }).then(console.log);
-// 64901768d9e8af909944d11afcaf6a11d30da003077a8db9e69185ba9728aadd
-```
-
-Strings and buffers are hashed as-is, and will produce equivalent results to
-other hash implementations:
+If you wish to use a different algorithm than the default SHA-256, specify the
+name of the algorithm as the second parameter.
 
 ```javascript
-import { createHash } from 'crypto';
+let name = "Ishmael";
 
-let nodeHash = createHash('sha1').update('Sue').digest('hex');
-console.log(nodeHash);
-// fa0307dae8fa8d8e2a3e031d6e2f092c2bc94c40
-
-easyHash('Sue', 'SHA-1').then(console.log);
-//fa0307dae8fa8d8e2a3e031d6e2f092c2bc94c40
+browserHash(name, "SHA-1").then(console.log);
+// 5cf59925a1926d4907a6bf56f42f0355b34a5812
 ```
 
-Circular references, functions, and other values that are typically difficult
-to stringify all produce distinct hash values:
+ArrayBuffers and ArrayBufferViews can hashed the same way as strings.
 
 ```javascript
-let circle = {};
-circle.ref = circle;
-easyHash(circle).then(console.log);
-// eb0e4589f1767b761b297b69595de2e0dc4cc0deb75271865017bfdde2892737
+let data = Uint8Array.from([80, 101, 113, 117, 111, 100]);
 
-let add = (x, y) => x + y;
-easyHash(add).then(console.log);
-//148524b1b9b7601f9e48670c3bda5c27ad0eeb11e9234b921ca79fe156d8917a
-
-let multiply = (x, y) => x * y;
-easyHash(multiply).then(console.log);
-// 9d2be08dbb7336288b7c3aa55d7dc94a3aa9e3128298cc63340ac455e7b13956
+browserHash(data).then(console.log);
+// 01c66c73fdc47f95e37e12bdbd637c07d6ce116eb5409d188b6baa4c23ab0e3a
 ```
 
-### easyHashSync
+### isBuffer
 
 ```javascript
-import { easyHashSync } from 'easy-hash';
+import { isBuffer } from "browser-hash";
 
-let user = {
-    id: 1337,
-    name: 'Sue'
-};
+let name = "Ishmael";
+let data = Uint8Array.from([80, 101, 113, 117, 111, 100]);
 
-let hash = easyHashSync(user);
-console.log(hash);
-// 64901768d9e8af909944d11afcaf6a11d30da003077a8db9e69185ba9728aadd
+console.log(isBuffer(name));
+// false
+
+console.log(isBuffer(data));
+// true
+
+console.log(isBuffer([1, 2, 3]));
+// false
 ```
 
-**`easyHashSync(val[, algo])`**
+#### `isBuffer(val)`
 
 _Parameters:_
 
-- **`val`** - Any JavaScript value, including strings, buffers, and objects.
-- **`algo`** _(optional)_ - A valid algorithm string name.
+- **`val`** - The value to check.
 
 _Returns:_
 
-- The specified hash formatted as a hexadecimal string.
+- A boolean, `true` if the value is an ArrayBuffer or ArrayBufferView,
+  `false` otherwise.
 
-Performs identical operations to `easyHash`, but synchronously. _Only usable in
-the Node environment. Browsers **must** use the asynchronous `easyHash`._
+In addition to the main `browserHash` function, some of the utilities used are
+provided as named exports for convenience.
 
-### basicHash
+The `isBuffer` utility simply checks if a value is an ArrayBuffer or
+ArrayBufferView.
+
+### stringToBuffer
 
 ```javascript
-import { basicHash } from 'easy-hash';
+import { stringToBuffer } from "browser-hash";
 
-let buffer = new Uint8Array([83, 117, 101]);
-basicHash(buffer, 'SHA-1').then(console.log);
-// fa0307dae8fa8d8e2a3e031d6e2f092c2bc94c40
+let data = stringToBuffer("Pequod");
 
-basicHash('Sue', 'SHA-1').then(console.log);
-// fa0307dae8fa8d8e2a3e031d6e2f092c2bc94c40
+console.log(data);
+// Uint8Array(6) [80, 101, 113, 117, 111, 100]
 ```
 
-**`basicHash(strOrBuffer[, algo])`**
+#### `stringToBuffer(str)`
 
 _Parameters:_
 
-- **`strOrBuffer`** - A string or ArrayBuffer to hash directly.
-- **`algo`** _(optional)_ - A valid algorithm string name.
+- **`str`** - The string to convert to a Uint8Array. Non-string values will
+  have their `toString` method called and then be converted.
 
 _Returns:_
 
-- A Promise that resolves to the specified hash formatted as a hexadecimal
+- A UTF-8 encoded Uint8Array.
+
+`stringToBuffer` is a very thin wrapper around
+[TextEncoder.encode](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode).
+
+### bufferToHex
+
+```javascript
+import { bufferToHex } from "browser-hash";
+
+let data = Uint8Array.from([80, 101, 113, 117, 111, 100]);
+
+console.log(bufferToHex(data));
+// 506571756f64
+```
+
+#### `bufferToHex(buffer)`
+
+_Parameters:_
+
+- **`buffer`** - An ArrayBuffer or ArrayBufferView to convert into a hex
   string.
 
-Similar to `easyHash` but skips any stringifying. Only usable on strings and
-buffers. Note that `easyHash` _automatically_ skips stringifying both string
-and buffer values. The only reason to use this alternative is if you would like
-an error to be thrown when non-string, non-buffer values are passed in.
-
-### basicHashSync
-
-```javascript
-import { basicHashSync } from 'easy-hash';
-
-let user = {
-    id: 1337,
-    name: 'Sue'
-};
-
-let hash = basicHashSync(user);
-console.log(hash);
-// 64901768d9e8af909944d11afcaf6a11d30da003077a8db9e69185ba9728aadd
-```
-
-**`basicHashSync(strOrBuffer[, algo])`**
-
-_Parameters:_
-
-- **`strOrBuffer`** - A string or ArrayBuffer to hash directly.
-- **`algo`** _(optional)_ - A valid algorithm string name.
-
 _Returns:_
 
-- The specified hash formatted as a hexadecimal string.
+- The binary data from the buffer, formatted as a hexadecimal string.
 
-A synchronous version of `basicHash`. Not usable on the browser.
-
-### toDeterministicJson
-
-```javascript
-import { toDeterministicJson } from 'easy-hash';
-
-let user = {
-    name: 'Sue',
-    role: undefined,
-    circle: {}
-};
-user.circle.ref = user.circle;
-
-let json = toDeterministicJson(user);
-console.log(json);
-// {"circle":{"ref":"{{Circular(circle)}}"},"name":"Sue","role":"{{undefined}}"}
-```
-
-**`toDeterministicJson(val)`**
-
-_Parameters:_
-
-- **`val`** - Any JavaScript value, including circular references, functions,
-  and other values not typically stringifiable with JSON.
-
-_Returns:_
-
-- A valid JSON string with sorted keys and special "double-curly" string
-  values to represent values not typically stringifiable with JSON.
-
-A modified version of `JSON.stringify`, designed to work with nearly any value,
-producing identical strings for equivalent values and different strings for
-distinct values.
-
-It sorts the keys of stringified objects:
-
-```javascript
-console.log(toDeterministicJson({ name: 'Sue', id: 1337 }));
-// {"id":1337,"name":"Sue"}
-
-console.log(toDeterministicJson({ id: 1337, name: 'Sue' }));
-// {"id":1337,"name":"Sue"}
-```
-
-It uses double-curly strings for unrepresentable values:
-
-```javascript
-let json = toDeterministicJson({ identity: undefined, level: 9000n });
-console.log(json);
-// {"identity":"{{undefined}}","level":"{{BigInt(9000)}}"}
-```
-
-It converts Maps, Sets, and functions into distinct double-curly strings:
-
-```javascript
-let names = new Set(['Sue', 'Susan', 'Suzy']);
-let json = toDeterministicJson({ names });
-console.log(json);
-// {"names":"{{Set([\"Sue\",\"Susan\",\"Suzy\"])}}"}
-```
+Convert small ArrayBuffers into hex strings for readability and portability.
 
 ## Compatibility
 
-Compatible with any browser that supports the
-[Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest),
+Compatible with any browser that supports
+[Web Crypto](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest),
+[TextEncoder](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder/encode),
 and
 [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 Basically all modern browsers but _not_ Internet Explorer.
-
-Compatible with Node back to version 14.
 
 ## License
 

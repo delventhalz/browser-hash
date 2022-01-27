@@ -1,14 +1,14 @@
 {
-  "name": "easy-hash",
+  "name": "browser-hash",
   "version": "0.1.0",
   "description": "Hash any JS value with zero dependencies on any platform",
-  "main": "easy-hash.js",
+  "main": "browser-hash.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/delventhalz/easy-hash.git"
+    "url": "git+https://github.com/delventhalz/browser-hash.git"
   },
   "keywords": [
     "crypto",
@@ -20,7 +20,7 @@
   "author": "Zac Delventhal <delventhalz@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/delventhalz/easy-hash/issues"
+    "url": "https://github.com/delventhalz/browser-hash/issues"
   },
-  "homepage": "https://github.com/delventhalz/easy-hash#readme"
+  "homepage": "https://github.com/delventhalz/browser-hash#readme"
 }
