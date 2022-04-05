@@ -17,6 +17,7 @@ which this library will not be suited for.
     * [isBuffer](#isbuffer)
     * [stringToBuffer](#stringtobuffer)
     * [bufferToHex](#buffertohex)
+    * [bufferHash](#bufferhash)
 - [Compatibility](#compatibility)
 - [Tests](#tests)
 - [License](#license)
