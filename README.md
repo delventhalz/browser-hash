@@ -46,8 +46,8 @@ browserHash(name).then(console.log);
 _Parameters:_
 
 - **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
-  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error when passed
-  any other type of value.
+  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error if passed any
+  other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
@@ -113,10 +113,10 @@ _Returns:_
 - A boolean. Returns `true` if the value is an ArrayBuffer or TypedArray,
   `false` otherwise.
 
-In addition to the main `browserHash` function, some of the utilities used by
-the function are provided as named exports for convenience.
+In addition to the default `browserHash` function, some of the utilities used
+internally by this library are provided as named exports for convenience.
 
-The `isBuffer` utility simply checks if a value is an ArrayBuffer or
+The `isBuffer` function simply checks if a value is an ArrayBuffer or
 TypedArray.
 
 ### stringToBuffer
@@ -134,7 +134,7 @@ console.log(data);
 
 _Parameters:_
 
-- **`str`** - The string to convert to a `Uint8Array`. Throws an error when
+- **`str`** - The string to convert to a `Uint8Array`. Throws an error if
   passed a non-string value.
 
 _Returns:_
@@ -165,7 +165,7 @@ _Returns:_
 
 - The binary data from the buffer, formatted as a hexadecimal string.
 
-Convert smallish buffers into hex strings for readability and portability.
+Convert buffers to hex strings for readability and portability.
 
 ### bufferHash
 
@@ -183,8 +183,8 @@ bufferHash(name).then(console.log);
 _Parameters:_
 
 - **`strOrBuffer`** - The value to hash. Can be a string, an ArrayBuffer, or a
-  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error when passed
-  any other type of value.
+  TypedArray (`Uint8Array`, `Uint16Array`, etc). Throws an error if passed any
+  other type of value.
 - **`algo`** _(optional)_ - The name of the hashing algorithm to use. Supported
   values are:
   * `"SHA-1"`
@@ -196,9 +196,9 @@ _Returns:_
 
 - A Promise that resolves to the specified hash, formatted as a `Uint8Array`.
 
-Similar to `browserHash`, but skips converting the digest to a hex string,
-instead returning a `Uint8Array` directly. Useful if you want to do further
-binary operations on the digest.
+Identical to the default `browserHash` function, but skips converting the
+digest to a hex string, instead returning a `Uint8Array` directly. Useful if
+you want to do further binary operations on the digest.
 
 ## Compatibility
 
