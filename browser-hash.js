@@ -31,7 +31,7 @@ export function stringToBuffer(str) {
 /**
  * Convert an ArrayBuffer or TypedArray into a hexadecimal string.
  *
- * @param {ArrayBuffer|TypedArray} buffer - the buffer to convert
+ * @param {ArrayBuffer | TypedArray} buffer - the buffer to convert
  * @returns {string} - a hex string
  */
 export function bufferToHex(buffer) {
@@ -56,7 +56,7 @@ function convertAndHash(strOrBuffer, algo) {
  * Asynchronously hash a string or array buffer using native functionality,
  * returning the digest formatted as a Uint8Array.
  *
- * @param {string|ArrayBuffer|TypedArray} val - a string or buffer
+ * @param {string | ArrayBuffer | TypedArray} val - a string or buffer
  * @param {string} [algo] - a valid algorithm name string
  * @returns {Promise<Uint8Array>} - the digest formatted as a Uint8Array
  */
@@ -69,7 +69,7 @@ export async function bufferHash(strOrBuffer, algo = "SHA-256") {
  * Asynchronously hash a string or array buffer using native functionality,
  * returning the digest formatted as a hexadecimal string.
  *
- * @param {string|ArrayBuffer|TypedArray} val - a string or buffer
+ * @param {string | ArrayBuffer | TypedArray} val - a string or buffer
  * @param {string} [algo] - a valid algorithm name string
  * @returns {Promise<string>} - the digest formatted as a hexadecimal string
  */

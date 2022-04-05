@@ -16,5 +16,5 @@ export type BrowserBuffer = ArrayBuffer | TypedArray;
 export function isBuffer(val: unknown): val is BrowserBuffer;
 export function stringToBuffer(str: string): Uint8Array;
 export function bufferToHex(buffer: BrowserBuffer): string;
-export function bufferHash(strOrBuffer: string|BrowserBuffer, algo?: string): Uint8Array;
-export function browserHash(strOrBuffer: string|BrowserBuffer, algo?: string): string;
+export function bufferHash(strOrBuffer: string | BrowserBuffer, algo?: string): Uint8Array;
+export function browserHash(strOrBuffer: string | BrowserBuffer, algo?: string): string;
