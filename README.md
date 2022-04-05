@@ -5,9 +5,10 @@ A lightweight wrapper to make digests from the
 a little more pleasant to use. Hash strings, ArrayBuffers, and TypedArrays
 directly in the browser with zero dependencies or other overhead.
 
-Note that this library is not intended for cryptographic purposes. If you need
-cryptographically secure hashing, there are extra steps you may need to take
-which this library will not be suited for.
+> **⚠ WARNING: This library is not a security tool.**
+>
+> Browser-hash is not intended for cryptographic purposes and should not be
+> used as a substitute for proper security system design.
 
 ## Table of Contents
 
