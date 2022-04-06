@@ -8,7 +8,9 @@ directly in the browser with zero dependencies or other overhead.
 > **⚠ WARNING: This library is not a security tool.**
 >
 > Browser-hash is not intended for cryptographic purposes and should not be
-> used as a substitute for proper security system design.
+> used as a substitute for proper security system design. Learn more about
+> non-cryptographic use of Web Crypto's `digest` method
+> [on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API/Non-cryptographic_uses_of_subtle_crypto).
 
 ## Table of Contents
 
