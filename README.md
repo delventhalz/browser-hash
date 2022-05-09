@@ -1,6 +1,6 @@
 # browserHash
 
-A lightweight wrapper to make digests from the
+A lightweight wrapper to create digests from the
 [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
 a little more pleasant to use. Hash strings, ArrayBuffers, and TypedArrays
 directly in the browser with zero dependencies or other overhead.
